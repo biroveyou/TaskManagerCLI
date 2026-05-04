@@ -7,6 +7,7 @@ today = date.today()
 
 # ID : {Title: "", tag: ""}
 tasks = {}
+json.dumps(tasks)
 index = 1
 
 # Functions
