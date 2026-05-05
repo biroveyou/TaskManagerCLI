@@ -1,53 +1,86 @@
 import argparse
 import pprint
 import json
+import os
 from datetime import date
 
-today = date.today()
+today = str(date.today())
 
-# ID : {Title: "", tag: ""}
-tasks = {}
-json.dumps(tasks)
-index = 1
+# [
+#   {
+#       "id": last_index,
+#       "desc":
+#       "status":
+#       "created_at":
+#       "update_at":
+#   },
+#   ...
+# ]
+
+data = []
 
 # Functions
 def task_add(args):
-    if tasks == {}:
-        last_index = 1
-    else:
-        last_index = (list(tasks.keys())[-1]) + 1
-    tasks[last_index] = {"desc": args.desc, 
-                         "status": args.status, 
-                         "created_at": today, 
-                         "updated_at": ""}
+    last_index = len(data)
+    data.append({"id": last_index,
+                 "desc": args.desc,
+                 "status": args.status,
+                 "created_at": today,
+                 "updated_at": "Not yet updated"})
     print(f"Task added successfully (ID: {last_index})")
 
 def task_delete(args):
-    tasks.pop(args.id_del)
-    print(f"Task deleted (ID: {args.id_del})")
+    data.pop(args.id_del)
+    print(f"Task deleted (ID: {args.id_del})") 
 
 def task_update(args):
-    tasks[args.id_upd] = {}
+    data[args.id_upd] = {}
     print(f"Task updated (ID: {args.id_upd})")
 
 def task_list(args):
     if args.tag == "todo":
-        for k, v in tasks.items():
-            if tasks[k]["tag"] == args.tag:
-                print(tasks[k])
+        print_tasks(data, args.tag)
     elif args.tag == "done":
-        for k, v in tasks.items():
-            if tasks[k]["tag"] == args.tag:
-                print(tasks[k])
+        print_tasks(data, args.tag)
     elif args.tag == "in-progress":
-        for k, v in tasks.items():
-            if tasks[k]["tag"] == args.tag:
-                print(tasks[k])
+        print_tasks(data, args.tag)
     else:
-        pprint.pprint(tasks)
+        print_tasks(data, "all")
+
+def print_tasks(data_task, argument):
+    print("ID".ljust(5, "-") + 
+      "DESCRIPTION".ljust(50, "-") +
+      "STATUS".ljust(14, "-") +
+      "CREATED AT".ljust(13, "-") +
+      "UPDATED AT".ljust(10, "-"))
+    if argument == "all":
+        for i in range(len(data)):
+            text_format(data, i)
+    for i in range(len(data)):
+        if data_task[i]["status"] == argument:
+            text_format(data, i)
+
+def text_format(data_task, index):
+    print(f"{str(data_task[index]["id"]).ljust(5, ".")}" + 
+          f"{str(data_task[index]["desc"]).ljust(50, ".")}" +
+          f"{str(data_task[index]["status"]).ljust(14, ".")}" +
+          f"{str(data_task[index]["created_at"]).ljust(13, ".")}" +
+          f"{str(data_task[index]["updated_at"]).ljust(10, ".")}")
+
+# Saving data
+def load_file():
+    if not os.path.exists("data.json"):
+        return []
+    with open("data.json", "r") as f:
+        return json.load(f)
+
+def save_file(list):
+    with open("data.json", "w") as f:
+        json.dump(data, f)
 
 # Main function
-def main(): 
+def main():
+
     parser = argparse.ArgumentParser(
         prog        = "task-manager",
         description = "A program made to help organizing the tasks")
@@ -84,4 +117,6 @@ def main():
         parser.print_help()
 
 if __name__ == "__main__":
+    data = load_file()
     main()
+    save_file(data)

@@ -19,8 +19,22 @@ def task_add():
     last_index = len(data)
     data.append({"id": last_index,})
 
-data = load_file()
-task_add()
-save_file(data)
+data_task = []
 
-print(data)
+print("ID".ljust(5, "-") + 
+      "DESCRIPTION".ljust(50, "-") +
+      "STATUS".ljust(14, "-") +
+      "CREATED AT".ljust(13, "-") +
+      "UPDATED AT".ljust(10, "-"))
+
+print(f"{str(10).ljust(5, ".")}" +
+      f"{str("Buy milk").ljust(50, ".")}" +
+      f"{str("Done").ljust(14, ".")}" +
+      f"{str("2026-05-04").ljust(13, ".")}" +
+      f"{str("Not yet").ljust(10, ".")}")
+
+print(f"{str(10).ljust(5, ".")}" +
+      f"{str("Go to the supermarket").ljust(50, ".")}" +
+      f"{str("In-progress").ljust(14, ".")}" +
+      f"{str("2026-05-04").ljust(13, ".")}" +
+      f"{str("Not yet").ljust(10, ".")}")
