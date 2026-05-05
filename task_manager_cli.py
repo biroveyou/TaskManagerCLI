@@ -30,11 +30,21 @@ def task_add(args):
     print(f"Task added successfully (ID: {last_index})")
 
 def task_delete(args):
-    data.pop(args.id_del)
+    for v in range(len(data)):
+        if data[v]["id"] == args.id_del:
+            delete_key = v
+    data.pop(delete_key)
     print(f"Task deleted (ID: {args.id_del})") 
 
 def task_update(args):
-    data[args.id_upd] = {}
+    for v in range(len(data)):
+        if data[v]["id"] == args.id_upd:
+            update_key = v
+    data[update_key] = {"id": update_key,
+                        "desc": args.desc,
+                        "status": data[update_key]["status"],
+                        "created_at": data[update_key]["created_at"],
+                        "updated_at": today}
     print(f"Task updated (ID: {args.id_upd})")
 
 def task_list(args):
@@ -94,11 +104,11 @@ def main():
     parser_add.set_defaults(func=task_add)
 
     parser_delete = subparsers.add_parser("delete", help="Deletes a task")
-    parser_delete.add_argument("id_del", help="ID of the task for delete")
+    parser_delete.add_argument("id_del", type=int, help="ID of the task for delete")
     parser_delete.set_defaults(func=task_delete)
 
     parser_update = subparsers.add_parser("update", help="Updates the status of a task")
-    parser_update.add_argument("id_upd", help="ID of the task for update")
+    parser_update.add_argument("id_upd", type=int, help="ID of the task for update")
     parser_update.add_argument("desc", help="Description of the task")
     parser_update.set_defaults(func=task_update)
 

@@ -1,8 +1,19 @@
 import json
 import os
 
-data = []
+data =  [
+            {"id": 0, 
+            "desc": "Buy Groceries tomorrow", 
+            "status": "todo", 
+            "created_at": "2026-05-05", 
+            "updated_at": "Not yet updated"}, 
 
+            {"id": 1, 
+             "desc": "Buy Groceries tomorrow", 
+             "status": "todo", 
+             "created_at": "2026-05-05", 
+             "updated_at": "Not yet updated"}
+        ]
 # Saving data
 def load_file():
     if not os.path.exists("data.json"):
@@ -19,22 +30,14 @@ def task_add():
     last_index = len(data)
     data.append({"id": last_index,})
 
-data_task = []
+def task_delete(tag):
+    for v in range(len(data)):
+        if data[v]["id"] == tag:
+            del data[v]
+    print(f"Task deleted (ID: {tag})") 
 
-print("ID".ljust(5, "-") + 
-      "DESCRIPTION".ljust(50, "-") +
-      "STATUS".ljust(14, "-") +
-      "CREATED AT".ljust(13, "-") +
-      "UPDATED AT".ljust(10, "-"))
-
-print(f"{str(10).ljust(5, ".")}" +
-      f"{str("Buy milk").ljust(50, ".")}" +
-      f"{str("Done").ljust(14, ".")}" +
-      f"{str("2026-05-04").ljust(13, ".")}" +
-      f"{str("Not yet").ljust(10, ".")}")
-
-print(f"{str(10).ljust(5, ".")}" +
-      f"{str("Go to the supermarket").ljust(50, ".")}" +
-      f"{str("In-progress").ljust(14, ".")}" +
-      f"{str("2026-05-04").ljust(13, ".")}" +
-      f"{str("Not yet").ljust(10, ".")}")
+print(data)
+print()
+task_delete(1)
+print()
+print(data)
