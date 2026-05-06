@@ -6,46 +6,56 @@ from datetime import date
 
 today = str(date.today())
 
-# [
-#   {
-#       "id": last_index,
-#       "desc":
-#       "status":
-#       "created_at":
-#       "update_at":
-#   },
-#   ...
-# ]
+# Data Structure for the JSON file
+# [{"id":
+#   "desc":
+#   "status":
+#   "created_at":
+#   "update_at": },
+#   ...]
 
 data = []
 
 # Functions
 def task_add(args):
     last_index = len(data)
-    data.append({"id": last_index,
-                 "desc": args.desc,
-                 "status": args.status,
-                 "created_at": today,
-                 "updated_at": "Not yet updated"})
-    print(f"Task added successfully (ID: {last_index})")
+    if last_index == look_for(last_index,"id"):
+        last_index += 1
+        print("I found it!")
+    else:
+        data.append({"id": last_index,
+                    "desc": args.desc,
+                    "status": args.status,
+                    "created_at": today,
+                    "updated_at": "Not yet updated"})
+        print(f"Task added successfully (ID: {last_index})")
 
 def task_delete(args):
-    for v in range(len(data)):
-        if data[v]["id"] == args.id_del:
-            delete_key = v
-    data.pop(delete_key)
-    print(f"Task deleted (ID: {args.id_del})") 
+    try:
+        delete_key = look_for(args.id_del, "id")
+        data.pop(delete_key)
+        print(f"Task deleted (ID: {args.id_del})")
+    except TypeError:
+        print(f"There are no ID {args.id_del} task")
 
 def task_update(args):
-    for v in range(len(data)):
-        if data[v]["id"] == args.id_upd:
-            update_key = v
-    data[update_key] = {"id": update_key,
-                        "desc": args.desc,
-                        "status": data[update_key]["status"],
-                        "created_at": data[update_key]["created_at"],
-                        "updated_at": today}
-    print(f"Task updated (ID: {args.id_upd})")
+    try:
+        update_key = look_for(args.id_upd, "id")
+        data[update_key] = {"id": update_key,
+                            "desc": args.desc,
+                            "status": data[update_key]["status"],
+                            "created_at": data[update_key]["created_at"],
+                            "updated_at": today}
+        print(f"Task updated (ID: {args.id_upd})")
+    except:
+        print(f"There are no ID {args.id_upd} task")
+
+def task_mark(args):
+    try:
+        data[look_for(args.id_mark, "id")].update({"status": args.tag_mark})
+        print(f"Task marked as {args.tag_mark} (ID: {args.id_mark})")
+    except TypeError:
+        print(print(f"No matching ID's {args.id_mark} task"))
 
 def task_list(args):
     if args.tag == "todo":
@@ -64,11 +74,11 @@ def print_tasks(data_task, argument):
       "CREATED AT".ljust(13, "-") +
       "UPDATED AT".ljust(10, "-"))
     if argument == "all":
-        for i in range(len(data)):
-            text_format(data, i)
-    for i in range(len(data)):
+        for i in range(len(data_task)):
+            text_format(data_task, i)
+    for i in range(len(data_task)):
         if data_task[i]["status"] == argument:
-            text_format(data, i)
+            text_format(data_task, i)
 
 def text_format(data_task, index):
     print(f"{str(data_task[index]["id"]).ljust(5, ".")}" + 
@@ -76,6 +86,11 @@ def text_format(data_task, index):
           f"{str(data_task[index]["status"]).ljust(14, ".")}" +
           f"{str(data_task[index]["created_at"]).ljust(13, ".")}" +
           f"{str(data_task[index]["updated_at"]).ljust(10, ".")}")
+
+def look_for(task_id, table):
+    for i in range(len(data)):
+        if data[i][table] == task_id:
+            return i
 
 # Saving data
 def load_file():
@@ -118,6 +133,12 @@ def main():
                              choices=["todo", "done", "in-progress", "all"], 
                              default="all")
     parser_list.set_defaults(func=task_list)
+
+    parser_mark = subparsers.add_parser("mark", help="Change the status of a task")
+    parser_mark.add_argument("tag_mark", help="Mark the task as in-progress or done",
+                             choices=["in-progress", "done"])
+    parser_mark.add_argument("id_mark", type=int, help="ID of the task")
+    parser_mark.set_defaults(func=task_mark)
 
     args = parser.parse_args()
 
