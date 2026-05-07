@@ -29,3 +29,8 @@ py task-cli.py list "done"
 py task-cli.py list "todo"
 py task-cli.py list "in-progress"
 ```
+
+Don't forget to add the `py` extension before running the file
+
+Created using the project: https://roadmap.sh/projects/task-tracker
+Made by Biroveyou
