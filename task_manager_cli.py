@@ -19,43 +19,39 @@ data = []
 # Functions
 def task_add(args):
     last_index = len(data)
-    if last_index == look_for(last_index,"id"):
+    same_key = look_for(last_index, "id")
+    while same_key:
         last_index += 1
-        print("I found it!")
-    else:
-        data.append({"id": last_index,
-                    "desc": args.desc,
-                    "status": args.status,
-                    "created_at": today,
-                    "updated_at": "Not yet updated"})
-        print(f"Task added successfully (ID: {last_index})")
-
+        print("Trying to find")
+        same_key = look_for(last_index, "id")
+    data.append({"id": last_index,
+                 "desc": args.desc,
+                 "status": args.status,
+                 "created_at": today,
+                 "updated_at": "Not yet updated"})
+    print(f"Task added successfully (ID: {last_index})")
+0
 def task_delete(args):
-    try:
-        delete_key = look_for(args.id_del, "id")
+    delete_key = look_for(args.id_del, "id")
+    if delete_key:
         data.pop(delete_key)
         print(f"Task deleted (ID: {args.id_del})")
-    except TypeError:
-        print(f"There are no ID {args.id_del} task")
 
 def task_update(args):
-    try:
-        update_key = look_for(args.id_upd, "id")
+    update_key = look_for(args.id_upd, "id")
+    if update_key:
         data[update_key] = {"id": update_key,
                             "desc": args.desc,
                             "status": data[update_key]["status"],
                             "created_at": data[update_key]["created_at"],
                             "updated_at": today}
         print(f"Task updated (ID: {args.id_upd})")
-    except:
-        print(f"There are no ID {args.id_upd} task")
 
 def task_mark(args):
-    try:
-        data[look_for(args.id_mark, "id")].update({"status": args.tag_mark})
+    mark_key = look_for(args.id_mark, "id")
+    if mark_key:
+        data[mark_key].update({"status": args.tag_mark})
         print(f"Task marked as {args.tag_mark} (ID: {args.id_mark})")
-    except TypeError:
-        print(print(f"No matching ID's {args.id_mark} task"))
 
 def task_list(args):
     if args.tag == "todo":
@@ -91,6 +87,8 @@ def look_for(task_id, table):
     for i in range(len(data)):
         if data[i][table] == task_id:
             return i
+    print(f"No matching task (ID: {task_id})")
+    return False
 
 # Saving data
 def load_file():
