@@ -9,17 +9,22 @@ It has basic commands with their positional arguments (PA) for organizing tasks:
 - **`mark`**    Mark a task with a new status (PA - `{done, in-progress}`) followed with the id (PA - `{done, in-progress}`) of the task
 
 ### Examples:
-```py task-cli.py add "Buy Milk"
-#Output: Task added successfully (ID: 0)
+```
+# Add a task
+py task-cli.py add "Buy Milk" # Output: Task added successfully (ID: 0)
 
-py task-cli.py update 0 "Buy Milk and get the kids"
-#Output: Task updated (ID: 0)
+# Update and delete a task
+py task-cli.py update 0 "Buy Milk and get the kids" # Output: Task updated (ID: 0)
+py task-cli.py delete 0 # Output: Task deleted (ID: 0)
 
-py task-cli.py delete 0
-#Output: Task deleted (ID: 0)
+# Mark a task as done or in-progress
+py task-cli.py mark in-progress 1
+py task-cli.py mark done 1
 
+# Listing all tasks
 py task-cli.py list
-#Listing tasks by status
+
+# Listing tasks by status
 py task-cli.py list "done"
 py task-cli.py list "todo"
 py task-cli.py list "in-progress"
