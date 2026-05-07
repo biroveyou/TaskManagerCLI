@@ -16,13 +16,12 @@ today = str(date.today())
 
 data = []
 
-# Functions
+# Command functions
 def task_add(args):
     last_index = len(data)
     same_key = look_for(last_index, "id")
     while same_key:
         last_index += 1
-        print("Trying to find")
         same_key = look_for(last_index, "id")
     data.append({"id": last_index,
                  "desc": args.desc,
@@ -30,28 +29,34 @@ def task_add(args):
                  "created_at": today,
                  "updated_at": "Not yet updated"})
     print(f"Task added successfully (ID: {last_index})")
-0
+
 def task_delete(args):
     delete_key = look_for(args.id_del, "id")
-    if delete_key:
+    if delete_key or delete_key == 0:
         data.pop(delete_key)
         print(f"Task deleted (ID: {args.id_del})")
+    else:
+        print(f"No matching task (ID: {args.id_del})")
 
 def task_update(args):
     update_key = look_for(args.id_upd, "id")
-    if update_key:
+    if update_key or update_key == 0:
         data[update_key] = {"id": update_key,
                             "desc": args.desc,
                             "status": data[update_key]["status"],
                             "created_at": data[update_key]["created_at"],
                             "updated_at": today}
         print(f"Task updated (ID: {args.id_upd})")
+    else:
+        print(f"No matching task (ID: {args.id_upd})")
 
 def task_mark(args):
     mark_key = look_for(args.id_mark, "id")
-    if mark_key:
+    if mark_key or mark_key == 0:
         data[mark_key].update({"status": args.tag_mark})
         print(f"Task marked as {args.tag_mark} (ID: {args.id_mark})")
+    else:
+        print(f"No matching task (ID: {args.id_mark})")
 
 def task_list(args):
     if args.tag == "todo":
@@ -63,6 +68,7 @@ def task_list(args):
     else:
         print_tasks(data, "all")
 
+# Utility functions
 def print_tasks(data_task, argument):
     print("ID".ljust(5, "-") + 
       "DESCRIPTION".ljust(50, "-") +
@@ -87,7 +93,6 @@ def look_for(task_id, table):
     for i in range(len(data)):
         if data[i][table] == task_id:
             return i
-    print(f"No matching task (ID: {task_id})")
     return False
 
 # Saving data
@@ -105,15 +110,17 @@ def save_file(list):
 def main():
 
     parser = argparse.ArgumentParser(
-        prog        = "task-manager",
-        description = "A program made to help organizing the tasks")
+        prog        = "task-cli",
+        description = "A program made to help organize the tasks - Made by Biroveyou")
     
     subparsers = parser.add_subparsers(dest="command")
 
     parser_add = subparsers.add_parser("add", help="Add a task")
     parser_add.add_argument("desc", help="Description of the task")
     parser_add.add_argument("status", help="The current status of the task",
-                             choices=["todo", "done", "in-progress", "all"])
+                             nargs="?",
+                             choices=["todo", "done", "in-progress"],
+                             default="todo")
     parser_add.set_defaults(func=task_add)
 
     parser_delete = subparsers.add_parser("delete", help="Deletes a task")
